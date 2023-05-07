@@ -12,7 +12,7 @@ export class AccountController {
     return this.accountService.create(createAccountDto);
   }
 
-  @Get()
+  @Get('/accounts')
   findAll() {
     return this.accountService.findAll();
   }
@@ -27,7 +27,7 @@ export class AccountController {
     return this.accountService.update(+id, updateAccountDto);
   }
 
-  @Delete(':id')
+  @Delete('/accounts:id')
   remove(@Param('id') id: string) {
     return this.accountService.remove(+id);
   }

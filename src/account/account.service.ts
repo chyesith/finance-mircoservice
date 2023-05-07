@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Account } from './entities/accountEntity';
+import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+
 
 @Injectable()
 export class AccountService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+  constructor(
+    @InjectRepository(Account)
+    private readonly accountRepository: Repository<Account>,
+  ) {}
+
+  async create(createAccountDto: CreateAccountDto) {
+    const salt = await bcrypt.genSalt();
+    const newPassword = await bcrypt.hash(createAccountDto.password, salt);
+    createAccountDto.password = newPassword;
+    const _account = this.accountRepository.create(createAccountDto);
+    return this.accountRepository.save(_account);
   }
 
   findAll() {
-    return `This action returns all account`;
+    return this.accountRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} account`;
+    return this.accountRepository.findOneBy({ id });
   }
 
   update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+    return this.accountRepository.update(id, updateAccountDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} account`;
+    return this.accountRepository.delete(id);
   }
 }

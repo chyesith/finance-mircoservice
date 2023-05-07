@@ -1,12 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AccountServiceService } from './services/account-service/account-service.service';
-import { InvoiceServiceService } from './services/invoice-service/invoice-service.service';
+import { AccountModule } from './account/account.module';
+import { InvoiceModule } from './invoice/invoice.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [],
+  imports: [
+    AccountModule,
+    InvoiceModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      database: 'studentdb',
+      entities: [],
+      synchronize: true,
+    }),
+  ],
   controllers: [AppController],
-  providers: [AppService, AccountServiceService, InvoiceServiceService],
+  providers: [AppService],
 })
 export class AppModule {}
