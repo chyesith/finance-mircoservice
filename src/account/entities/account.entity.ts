@@ -5,12 +5,18 @@ import { Invoice } from '../../invoice/entities/invoice.entity';
 export class Account {
   @PrimaryGeneratedColumn()
   id: number;
+  @Column()
+  email: string;
 
   @Column()
-  studentId: number;
+  password: string;
+
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @OneToMany(() => Invoice, (invoice) => invoice.account)
-  invoiceList: Invoice[];
-
-  HasOutstandingBalance: boolean;
+  invoices: Invoice[];
 }

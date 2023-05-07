@@ -4,10 +4,22 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Account } from '../../account/entities/account.entity';
 import { MaxLength, MinLength } from 'class-validator';
+
+export enum Types {
+  Fee = 'course',
+  Overdue = 'overDue',
+}
+
+export enum Status {
+  Paid = 'paid',
+  Outstanding = 'outstanding',
+  Cancelled = 'cancelled',
+}
 
 @Entity()
 export class Invoice extends BaseEntity {
@@ -23,13 +35,15 @@ export class Invoice extends BaseEntity {
   @Column()
   dueDate: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: Types,
+  })
   type: Types;
 
   @Column()
   status: Status;
 
-  @ManyToMany(() => Account)
-  @JoinTable()
+  @ManyToOne(() => Account, (account) => account.invoices)
   account: Account;
 }
